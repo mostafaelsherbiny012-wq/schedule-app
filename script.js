@@ -28,7 +28,13 @@ function addLesson() {
     const reminderMinutes = parseInt(document.getElementById('reminderMinutes').value);
 
     if (!subject || !teacher || !day || !startTime || !endTime) {
-        alert('من فضلك املأ جميع الحقول');
+        showNotification('⚠️ من فضلك املأ جميع الحقول');
+        return;
+    }
+
+    // التحقق من صحة الوقت
+    if (startTime >= endTime) {
+        showNotification('⚠️ وقت البداية يجب أن يكون قبل وقت النهاية');
         return;
     }
 
@@ -54,7 +60,7 @@ function addLesson() {
 function displayLessons() {
     const tbody = document.getElementById('scheduleBody');
     if (lessons.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;">لا توجد دروس مسجلة</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:30px;">📭 لا توجد دروس مسجلة</td></tr>';
         return;
     }
 
@@ -65,7 +71,7 @@ function displayLessons() {
             <td>${lesson.day}</td>
             <td>${lesson.startTime}</td>
             <td>${lesson.endTime}</td>
-            <td><span class="reminder-badge">قبل ${lesson.reminderMinutes} دقيقة</span></td>
+            <td><span class="reminder-badge">⏰ ${lesson.reminderMinutes} دقيقة</span></td>
             <td><button class="delete-btn" onclick="deleteLesson(${lesson.id})">🗑️ حذف</button></td>
         </tr>
     `).join('');
@@ -73,7 +79,7 @@ function displayLessons() {
 
 // حذف درس
 function deleteLesson(id) {
-    if (confirm('هل أنت متأكد من حذف هذا الدرس؟')) {
+    if (confirm('🗑️ هل أنت متأكد من حذف هذا الدرس؟')) {
         lessons = lessons.filter(l => l.id !== id);
         localStorage.setItem('lessons', JSON.stringify(lessons));
         displayLessons();
@@ -88,6 +94,7 @@ function clearForm() {
     document.getElementById('day').value = '';
     document.getElementById('startTime').value = '';
     document.getElementById('endTime').value = '';
+    document.getElementById('reminderMinutes').value = '10';
 }
 
 // التحقق من المواعيد للتنبيه
@@ -110,7 +117,7 @@ function checkReminders() {
 function getReminderTime(startTime, minutesBefore) {
     const [hours, mins] = startTime.split(':').map(Number);
     let totalMins = hours * 60 + mins - minutesBefore;
-    if (totalMins < 0) totalMins += 1440; // لو قبله بليل
+    if (totalMins < 0) totalMins += 1440;
     const h = Math.floor(totalMins / 60);
     const m = totalMins % 60;
     return formatTime(h, m);
@@ -129,18 +136,19 @@ function getDayName(dayIndex) {
 
 // عرض التنبيه
 function showReminder(lesson) {
-    const message = `📢 تنبيه! درس ${lesson.subject} مع الأستاذ ${lesson.teacher} يبدأ بعد ${lesson.reminderMinutes} دقيقة`;
+    const message = `📢 تنبيه! درس ${lesson.subject} مع الأستاذ ${lesson.teacher}`;
+    const detail = `⏰ يبدأ بعد ${lesson.reminderMinutes} دقيقة`;
     
     // تنبيه في المتصفح
     if ('Notification' in window && Notification.permission === 'granted') {
         new Notification('🔔 موعد الدرس قرب!', {
-            body: message,
+            body: `${message}\n${detail}`,
             icon: '📚'
         });
     }
 
     // تنبيه على الصفحة
-    showNotification(`⏰ ${message}`);
+    showNotification(`⏰ ${message} - ${detail}`);
 }
 
 // عرض إشعار على الصفحة
