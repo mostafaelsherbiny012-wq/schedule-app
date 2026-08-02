@@ -134,24 +134,53 @@ function getDayName(dayIndex) {
     return days[dayIndex];
 }
 
-// عرض التنبيه
+// عرض التنبيه مع النطق الصوتي
 function showReminder(lesson) {
-    const message = `📢 تنبيه! درس ${lesson.subject} مع الأستاذ ${lesson.teacher}`;
-    const detail = `⏰ يبدأ بعد ${lesson.reminderMinutes} دقيقة`;
+    const message = `📢 الأستاذ ${lesson.teacher} قرب!`;
+    const detail = `⏰ حان وقت مذاكرة مادة ${lesson.subject}`;
+    const timeDetail = `📖 يبدأ بعد ${lesson.reminderMinutes} دقيقة`;
+    
+    // 🔈 التطبيق ينطق الرسالة بصوت
+    speakText(`معاد مستر ${lesson.teacher} قرب، حان وقت مذاكرة مادة ${lesson.subject}`);
     
     // تنبيه في المتصفح
     if ('Notification' in window && Notification.permission === 'granted') {
         new Notification('🔔 موعد الدرس قرب!', {
-            body: `${message}\n${detail}`,
+            body: `${message}\n${detail}\n${timeDetail}`,
             icon: '📚'
         });
     }
 
-    // تنبيه على الصفحة
-    showNotification(`⏰ ${message} - ${detail}`);
+    // تنبيه على الصفحة (إشعار منبثق)
+    showNotification(`🔔 ${message} ${detail} - ${timeDetail}`);
 }
 
-// عرض إشعار على الصفحة
+// 🔈 دالة النطق الصوتي
+function speakText(text) {
+    if ('speechSynthesis' in window) {
+        // لو في كلام بيشتغل، أوقفه
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'ar-EG'; // اللهجة المصرية
+        utterance.rate = 0.9;      // سرعة الكلام (0.1 - 10)
+        utterance.pitch = 1;       // نبرة الصوت (0 - 2)
+        utterance.volume = 1;      // مستوى الصوت (0 - 1)
+        
+        // اختيار صوت عربي لو موجود
+        const voices = window.speechSynthesis.getVoices();
+        const arabicVoice = voices.find(voice => voice.lang.startsWith('ar'));
+        if (arabicVoice) {
+            utterance.voice = arabicVoice;
+        }
+        
+        window.speechSynthesis.speak(utterance);
+    } else {
+        console.log('متصفحك لا يدعم خاصية النطق');
+    }
+}
+
+// عرض إشعار على الصفحة (منبثق)
 function showNotification(message) {
     const notif = document.createElement('div');
     notif.className = 'notification';
@@ -162,5 +191,5 @@ function showNotification(message) {
     setTimeout(() => {
         notif.style.display = 'none';
         document.body.removeChild(notif);
-    }, 5000);
+    }, 8000);
 }
