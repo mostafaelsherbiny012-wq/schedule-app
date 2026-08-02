@@ -1,0 +1,24 @@
+{
+  "name": "منبه الدروس الذكي",
+  "short_name": "منبه الدروس",
+  "description": "تطبيق لإدارة جدول الدروس وتنبيهات المواعيد",
+  "start_url": "/schedule-app/",
+  "display": "standalone",
+  "background_color": "#f0f4f8",
+  "theme_color": "#2c3e50",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/schedule-app/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/schedule-app/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
