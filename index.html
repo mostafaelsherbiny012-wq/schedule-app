@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول الدروس - منبه ذكي</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📚 جدول الدروس</h1>
+        
+        <!-- نموذج إضافة درس جديد -->
+        <div class="add-form">
+            <h2>إضافة درس جديد</h2>
+            <div class="form-group">
+                <input type="text" id="subject" placeholder="المادة (مثال: رياضيات)">
+                <input type="text" id="teacher" placeholder="اسم الأستاذ">
+            </div>
+            <div class="form-group">
+                <input type="text" id="day" placeholder="اليوم (مثال: السبت)">
+                <input type="time" id="startTime" placeholder="وقت البداية">
+                <input type="time" id="endTime" placeholder="وقت النهاية">
+            </div>
+            <div class="form-group">
+                <label>نبهني قبل:</label>
+                <select id="reminderMinutes">
+                    <option value="5">5 دقائق</option>
+                    <option value="10" selected>10 دقائق</option>
+                    <option value="15">15 دقيقة</option>
+                    <option value="30">30 دقيقة</option>
+                    <option value="60">ساعة</option>
+                </select>
+                <button onclick="addLesson()">➕ إضافة الدرس</button>
+            </div>
+        </div>
+
+        <!-- جدول عرض الدروس -->
+        <div class="schedule">
+            <h2>الدروس المسجلة</h2>
+            <table id="scheduleTable">
+                <thead>
+                    <tr>
+                        <th>المادة</th>
+                        <th>الأستاذ</th>
+                        <th>اليوم</th>
+                        <th>من</th>
+                        <th>إلى</th>
+                        <th>التنبيه</th>
+                        <th>إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleBody">
+                    <!-- هنا هتظهر الدروس -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
